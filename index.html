@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Forrez OV Boekingstool</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="OV Boekingstool">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxODAgMTgwJz48cmVjdCB3aWR0aD0nMTgwJyBoZWlnaHQ9JzE4MCcgcng9JzM2JyBmaWxsPScjMTExJy8+PHRleHQgeD0nOTAnIHk9JzgwJyBmb250LXNpemU9JzQ4JyBmb250LXdlaWdodD0nOTAwJyBmaWxsPScjQ0MwMDAwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZic+Rk9SUkVaPC90ZXh0Pjx0ZXh0IHg9JzkwJyB5PScxMzAnIGZvbnQtc2l6ZT0nNDAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9J3doaXRlJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZic+T1Y8L3RleHQ+PC9zdmc+">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23111'/><text x='16' y='13' font-size='9' font-weight='900' fill='%23CC0000' text-anchor='middle' font-family='sans-serif'>FORREZ</text><text x='16' y='25' font-size='12' font-weight='700' fill='white' text-anchor='middle' font-family='sans-serif'>OV</text></svg>">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRm9ycmV6IE9WIEJvZWtpbmdzdG9vbCIsInNob3J0X25hbWUiOiJPViBUb29sIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2ZmZmZmZiIsInRoZW1lX2NvbG9yIjoiIzExMTExMSIsInN0YXJ0X3VybCI6Ii4vIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTkyIDE5Mic+JTNDcmVjdCB3aWR0aD0nMTkyJyBoZWlnaHQ9JzE5Micgcng9JzM4JyBmaWxsPSclMjMxMTEnLyUzRSUzQ3RleHQgeD0nOTYnIHk9JzgyJyBmb250LXNpemU9JzUwJyBmb250LXdlaWdodD0nOTAwJyBmaWxsPSclMjNDQzAwMDAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJz5GT1JSRVolM0MvdGV4dCUzRSUzQ3RleHQgeD0nOTYnIHk9JzEzNScgZm9udC1zaXplPSc0NCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nd2hpdGUnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJz5PViUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,system-ui,sans-serif;background:#fff;color:#111;-webkit-text-size-adjust:100%}
+@supports(padding-top:env(safe-area-inset-top)){body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}}
+</style>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const {
+  useState,
+  useMemo,
+  useEffect
+} = React;
+const APP_PW = "Txvlo!\u20AC&@/:(7-,.\"975;?!-";
+const INIT_COMPANIES = ["Destelbergen", "Diksmuide", "Fleurus Agri", "Forrez International", "Forrim Velgen", "Forrim Vulcanisatie", "Glimes", "Ieper", "Kuurne", "Leuze Agri", "Leuze Tourisme", "Muno", "Noville", "Rochefort", "Spacerent", "X-pneus", "Zeebrugge", "Zillebeke"];
+const INIT_DOC_TYPES = [{
+  id: "onr_voorh",
+  name: "Aanslagbiljet onroerende voorheffing",
+  exp: "610002"
+}];
+const INIT_ANALS = [{
+  code: "01",
+  name: "Zillebeke"
+}, {
+  code: "02",
+  name: "Leuze Agri"
+}, {
+  code: "03",
+  name: "Kuurne"
+}, {
+  code: "04",
+  name: "VLA Destelbergen"
+}, {
+  code: "06",
+  name: "Ieper"
+}, {
+  code: "07",
+  name: "VLA Zottegem Ballingsweg"
+}, {
+  code: "08",
+  name: "Leuze Tourisme"
+}, {
+  code: "09",
+  name: "Diksmuide"
+}, {
+  code: "10",
+  name: "Forrez International"
+}, {
+  code: "12",
+  name: "Fleurus Agri"
+}, {
+  code: "41",
+  name: "Glimes"
+}, {
+  code: "42",
+  name: "Noville"
+}, {
+  code: "61",
+  name: "Rochefort"
+}, {
+  code: "301",
+  name: "Forrim Velgen"
+}, {
+  code: "302",
+  name: "Forrim Vulcanisatie"
+}, {
+  code: "500",
+  name: "Spacerent"
+}, {
+  code: "501",
+  name: "Intern OV 3 kind"
+}, {
+  code: "502",
+  name: "Eigendom FBA intern"
+}, {
+  code: "505",
+  name: "Eigendom FBA intern"
+}, {
+  code: "506",
+  name: "Eigendom FBA intern"
+}, {
+  code: "507",
+  name: "Eigendom FBA intern"
+}, {
+  code: "510",
+  name: "Spacerent GRO"
+}, {
+  code: "541",
+  name: "Eigendom FBA intern"
+}, {
+  code: "561",
+  name: "Eigendom FBA intern"
+}, {
+  code: "704",
+  name: "Destelbergen"
+}, {
+  code: "710",
+  name: "Zeebrugge"
+}, {
+  code: "800",
+  name: "X-pneus"
+}, {
+  code: "960",
+  name: "Muno"
+}, {
+  code: "5301",
+  name: "Eigendom FBA intern"
+}, {
+  code: "5710",
+  name: "Eigendom FBA intern"
+}];
+const pm = s => {
+  const [y, m] = s.split("-").map(Number);
+  return new Date(y, m - 1, 1);
+};
+const mdf = (a, b) => (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+const ld = (y, m) => new Date(y, m + 1, 0);
+const fn = (y, m) => new Date(y, m + 1, 1);
+const fd = d => `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+const fa = n => n.toLocaleString("nl-BE", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+const iso = d => d.toISOString().slice(0, 10);
+const mk = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+const ml = d => {
+  const s = d.toLocaleDateString("nl-BE", {
+    month: "long",
+    year: "numeric"
+  });
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+const r2 = n => Math.round(n * 100) / 100;
+function generateAll(cfg) {
+  const {
+    docType,
+    anal,
+    periodFrom,
+    periodTo,
+    geschatBedrag,
+    werkelijkBedrag,
+    maandOntvangst,
+    isOwner,
+    doorgefactureerd,
+    maandDoorfacturatie
+  } = cfg;
+  const start = pm(periodFrom),
+    end = pm(periodTo);
+  const hasWerkelijk = werkelijkBedrag > 0 && maandOntvangst;
+  const ontvangst = hasWerkelijk ? pm(maandOntvangst) : null;
+  const hasDoorF = doorgefactureerd && maandDoorfacturatie;
+  const doorFM = hasDoorF ? pm(maandDoorfacturatie) : null;
+  const totalM = mdf(start, end) + 1;
+  if (totalM <= 0) return [];
+  const exp = isOwner ? "640100" : docType.exp;
+  const entries = [];
+  for (let i = 0; i < totalM - 1; i++) {
+    const cur = new Date(start.getFullYear(), start.getMonth() + i, 1);
+    const eom = ld(cur.getFullYear(), cur.getMonth());
+    const fom = fn(cur.getFullYear(), cur.getMonth());
+    const curKey = mk(cur);
+    const cumMonths = i + 1;
+    const remainingMonths = totalM - cumMonths;
+    const kostInFase1 = !hasWerkelijk || curKey < mk(ontvangst);
+    if (kostInFase1) {
+      const amt = r2(cumMonths * geschatBedrag / totalM);
+      entries.push({
+        date: eom,
+        acct: exp,
+        desc: "Provisie OV (geschat)",
+        d: amt,
+        c: 0,
+        anal,
+        type: "B",
+        month: curKey,
+        fase: "TTK",
+        side: "K"
+      });
+      entries.push({
+        date: eom,
+        acct: "492000",
+        desc: "Toe te rekenen kosten",
+        d: 0,
+        c: amt,
+        anal: "",
+        type: "B",
+        month: curKey,
+        fase: "TTK",
+        side: "K"
+      });
+      entries.push({
+        date: fom,
+        acct: "492000",
+        desc: "Tegenboeking TTK",
+        d: amt,
+        c: 0,
+        anal: "",
+        type: "T",
+        month: curKey,
+        fase: "TTK",
+        side: "K"
+      });
+      entries.push({
+        date: fom,
+        acct: exp,
+        desc: "Tegenboeking TTK",
+        d: 0,
+        c: amt,
+        anal,
+        type: "T",
+        month: curKey,
+        fase: "TTK",
+        side: "K"
+      });
+    } else {
+      const amt = r2(remainingMonths * werkelijkBedrag / totalM);
+      if (amt > 0) {
+        entries.push({
+          date: eom,
+          acct: "490000",
+          desc: "Over te dragen kosten OV",
+          d: amt,
+          c: 0,
+          anal: "",
+          type: "B",
+          month: curKey,
+          fase: "OTK",
+          side: "K"
+        });
+        entries.push({
+          date: eom,
+          acct: exp,
+          desc: "Correctie te veel kost",
+          d: 0,
+          c: amt,
+          anal,
+          type: "B",
+          month: curKey,
+          fase: "OTK",
+          side: "K"
+        });
+        entries.push({
+          date: fom,
+          acct: exp,
+          desc: "Tegenboeking OTK",
+          d: amt,
+          c: 0,
+          anal,
+          type: "T",
+          month: curKey,
+          fase: "OTK",
+          side: "K"
+        });
+        entries.push({
+          date: fom,
+          acct: "490000",
+          desc: "Tegenboeking OTK",
+          d: 0,
+          c: amt,
+          anal: "",
+          type: "T",
+          month: curKey,
+          fase: "OTK",
+          side: "K"
+        });
+      }
+    }
+    if (isOwner) {
+      const revInVKO = !doorgefactureerd || !maandDoorfacturatie || curKey < mk(doorFM);
+      if (revInVKO) {
+        const revAmt = r2(cumMonths * (kostInFase1 ? geschatBedrag : werkelijkBedrag) / totalM);
+        entries.push({
+          date: eom,
+          acct: "491000",
+          desc: "Verkregen opbrengsten OV",
+          d: revAmt,
+          c: 0,
+          anal: "",
+          type: "B",
+          month: curKey,
+          fase: "VKO",
+          side: "O"
+        });
+        entries.push({
+          date: eom,
+          acct: "744002",
+          desc: "Doorrekening OV",
+          d: 0,
+          c: revAmt,
+          anal,
+          type: "B",
+          month: curKey,
+          fase: "VKO",
+          side: "O"
+        });
+        entries.push({
+          date: fom,
+          acct: "744002",
+          desc: "Tegenboeking VKO",
+          d: revAmt,
+          c: 0,
+          anal,
+          type: "T",
+          month: curKey,
+          fase: "VKO",
+          side: "O"
+        });
+        entries.push({
+          date: fom,
+          acct: "491000",
+          desc: "Tegenboeking VKO",
+          d: 0,
+          c: revAmt,
+          anal: "",
+          type: "T",
+          month: curKey,
+          fase: "VKO",
+          side: "O"
+        });
+      } else {
+        const revAmt = r2(remainingMonths * werkelijkBedrag / totalM);
+        if (revAmt > 0) {
+          entries.push({
+            date: eom,
+            acct: "744002",
+            desc: "Over te dragen opbrengsten OV",
+            d: revAmt,
+            c: 0,
+            anal,
+            type: "B",
+            month: curKey,
+            fase: "OTO",
+            side: "O"
+          });
+          entries.push({
+            date: eom,
+            acct: "493000",
+            desc: "Over te dragen opbrengsten",
+            d: 0,
+            c: revAmt,
+            anal: "",
+            type: "B",
+            month: curKey,
+            fase: "OTO",
+            side: "O"
+          });
+          entries.push({
+            date: fom,
+            acct: "493000",
+            desc: "Tegenboeking OTO",
+            d: revAmt,
+            c: 0,
+            anal: "",
+            type: "T",
+            month: curKey,
+            fase: "OTO",
+            side: "O"
+          });
+          entries.push({
+            date: fom,
+            acct: "744002",
+            desc: "Tegenboeking OTO",
+            d: 0,
+            c: revAmt,
+            anal,
+            type: "T",
+            month: curKey,
+            fase: "OTO",
+            side: "O"
+          });
+        }
+      }
+    }
+  }
+  return entries;
+}
+const R = "#CC0000",
+  BK = "#111",
+  W = "#fff";
+function LoginScreen({
+  onLogin
+}) {
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState(false);
+  const [show, setShow] = useState(false);
+  const check = () => {
+    if (pw === APP_PW) {
+      try {
+        sessionStorage.setItem("fov_auth", "1");
+      } catch (e) {}
+      onLogin();
+    } else {
+      setErr(true);
+      setTimeout(() => setErr(false), 2000);
+    }
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      background: BK,
+      padding: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 32,
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 32,
+      fontWeight: 900,
+      letterSpacing: "0.05em",
+      color: R
+    }
+  }, "FORREZ"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 300,
+      fontSize: 12,
+      color: "#777",
+      marginTop: 4
+    }
+  }, "Part of the Magna Tyres Group")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: W,
+      borderRadius: 8,
+      padding: 24,
+      width: "100%",
+      maxWidth: 340
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      fontWeight: 700,
+      marginBottom: 16,
+      textAlign: "center",
+      color: BK
+    }
+  }, "OV Boekingstool"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      fontWeight: 700,
+      color: "#666",
+      marginBottom: 4,
+      textTransform: "uppercase",
+      letterSpacing: "0.06em"
+    }
+  }, "Wachtwoord"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: show ? "text" : "password",
+    value: pw,
+    onChange: e => {
+      setPw(e.target.value);
+      setErr(false);
+    },
+    onKeyDown: e => {
+      if (e.key === "Enter") check();
+    },
+    style: {
+      width: "100%",
+      padding: "10px 40px 10px 12px",
+      fontSize: 14,
+      border: "1px solid " + (err ? "#CC0000" : "#333"),
+      borderRadius: 3,
+      background: W,
+      color: BK,
+      boxSizing: "border-box"
+    },
+    placeholder: "Voer wachtwoord in",
+    autoFocus: true
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShow(!show),
+    style: {
+      position: "absolute",
+      right: 8,
+      top: "50%",
+      transform: "translateY(-50%)",
+      background: "none",
+      border: "none",
+      cursor: "pointer",
+      fontSize: 16,
+      color: "#999"
+    }
+  }, show ? "\u25C9" : "\u25CE")), err && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: R,
+      fontSize: 12,
+      marginBottom: 8,
+      textAlign: "center"
+    }
+  }, "Fout wachtwoord"), /*#__PURE__*/React.createElement("button", {
+    onClick: check,
+    style: {
+      width: "100%",
+      padding: "12px",
+      fontSize: 15,
+      fontWeight: 800,
+      background: R,
+      color: W,
+      border: "none",
+      borderRadius: 4,
+      cursor: "pointer"
+    }
+  }, "Aanmelden")));
+}
+function App() {
+  const load = (key, fallback) => {
+    try {
+      const v = localStorage.getItem("fov_" + key);
+      return v ? JSON.parse(v) : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  };
+  const save = (key, val) => {
+    try {
+      localStorage.setItem("fov_" + key, JSON.stringify(val));
+    } catch (e) {}
+  };
+  const [authed, setAuthed] = useState(() => {
+    try {
+      return sessionStorage.getItem("fov_auth") === "1";
+    } catch (e) {
+      return false;
+    }
+  });
+  const [companies, setCompanies] = useState(() => load("companies", INIT_COMPANIES));
+  const [docTypes, setDocTypes] = useState(() => load("docTypes", INIT_DOC_TYPES));
+  const [anals, setAnals] = useState(() => load("anals", INIT_ANALS));
+  const [f, setF] = useState(() => load("form", {
+    company: "Forrez International",
+    docType: "onr_voorh",
+    anal: "10",
+    from: "2026-01",
+    to: "2026-12",
+    geschat: "",
+    werkelijk: "",
+    maandOntvangst: "2026-08",
+    isOwner: "ja",
+    doorgefactureerd: "nee",
+    maandDoorfacturatie: ""
+  }));
+  useEffect(() => save("companies", companies), [companies]);
+  useEffect(() => save("docTypes", docTypes), [docTypes]);
+  useEffect(() => save("anals", anals), [anals]);
+  useEffect(() => save("form", f), [f]);
+  const s = (k, v) => setF(p => ({
+    ...p,
+    [k]: v
+  }));
+  const [entries, setEntries] = useState([]);
+  const [view, setView] = useState("setup");
+  const [expanded, setExpanded] = useState(null);
+  const [adding, setAdding] = useState(null);
+  const [newComp, setNewComp] = useState("");
+  const [newDoc, setNewDoc] = useState({
+    name: "",
+    exp: ""
+  });
+  const [newAnal, setNewAnal] = useState({
+    code: "",
+    name: ""
+  });
+  const dt = docTypes.find(d => d.id === f.docType) || docTypes[0];
+  const isOwner = f.isOwner === "ja";
+  const isDoor = f.doorgefactureerd === "ja";
+  const startM = f.from ? pm(f.from) : null;
+  const endM = f.to ? pm(f.to) : null;
+  const totM = startM && endM ? mdf(startM, endM) + 1 : 0;
+  const baseAmt = Number(f.geschat) || 0;
+  const perM = totM > 0 && baseAmt ? baseAmt / totM : 0;
+  const doGen = () => {
+    const g = Number(f.geschat) || 0;
+    const w = Number(f.werkelijk) || 0;
+    if (g <= 0 && w <= 0) return;
+    setEntries(generateAll({
+      docType: dt,
+      anal: f.anal,
+      periodFrom: f.from,
+      periodTo: f.to,
+      geschatBedrag: g,
+      werkelijkBedrag: w,
+      maandOntvangst: f.maandOntvangst,
+      isOwner,
+      doorgefactureerd: isDoor,
+      maandDoorfacturatie: f.maandDoorfacturatie
+    }));
+    setView("timeline");
+    setExpanded(null);
+  };
+  const months = useMemo(() => {
+    const map = {};
+    entries.forEach(e => {
+      if (!map[e.month]) map[e.month] = [];
+      map[e.month].push(e);
+    });
+    return Object.keys(map).sort().map(k => {
+      const all = map[k];
+      return {
+        key: k,
+        label: ml(pm(k)),
+        entries: all,
+        boeking: all.filter(e => e.type === "B"),
+        tegen: all.filter(e => e.type === "T"),
+        kostFase: all.find(e => e.side === "K")?.fase || "",
+        opbrFase: all.find(e => e.side === "O")?.fase || ""
+      };
+    });
+  }, [entries]);
+  const exportAPI = () => {
+    const p = {
+      company: f.company,
+      documentType: dt.name,
+      period: f.from + " - " + f.to,
+      geschatBedrag: Number(f.geschat),
+      werkelijkBedrag: Number(f.werkelijk) || null,
+      autoSchedule: true,
+      months: months.map(m => ({
+        month: m.key,
+        bookingDate: m.boeking[0] ? iso(m.boeking[0].date) : null,
+        reversalDate: m.tegen[0] ? iso(m.tegen[0].date) : null,
+        bookingEntries: m.boeking.map(e => ({
+          date: iso(e.date),
+          account: e.acct,
+          debit: e.d,
+          credit: e.c,
+          analyticalCode: e.anal || null
+        })),
+        reversalEntries: m.tegen.map(e => ({
+          date: iso(e.date),
+          account: e.acct,
+          debit: e.d,
+          credit: e.c,
+          analyticalCode: e.anal || null
+        }))
+      }))
+    };
+    const b = new Blob([JSON.stringify(p, null, 2)], {
+      type: "application/json"
+    });
+    const u = URL.createObjectURL(b);
+    const a = document.createElement("a");
+    a.href = u;
+    a.download = "datam_auto_" + f.from + "_" + f.to + ".json";
+    a.click();
+    URL.revokeObjectURL(u);
+  };
+  const exportCSV = () => {
+    const h = ["Maand", "Fase", "Kant", "Datum", "Rekening", "Omschrijving", "Debet", "Credit", "Analytisch", "Type"];
+    const rows = entries.map(e => [e.month, e.fase, e.side === "K" ? "Kost" : "Opbrengst", fd(e.date), e.acct, e.desc, e.d > 0 ? fa(e.d) : "", e.c > 0 ? fa(e.c) : "", e.anal, e.type === "B" ? "Boeking" : "Tegenboeking"]);
+    const csv = [h, ...rows].map(r => r.map(c => '"' + c + '"').join(";")).join("\n");
+    const b = new Blob(["\uFEFF" + csv], {
+      type: "text/csv;charset=utf-8;"
+    });
+    const u = URL.createObjectURL(b);
+    const a = document.createElement("a");
+    a.href = u;
+    a.download = "boekingsreeks_volledig.csv";
+    a.click();
+    URL.revokeObjectURL(u);
+  };
+  const inp = {
+    width: "100%",
+    padding: "10px 12px",
+    fontSize: 14,
+    border: "1px solid #333",
+    borderRadius: 3,
+    background: W,
+    color: BK,
+    boxSizing: "border-box"
+  };
+  const selS = {
+    ...inp,
+    appearance: "auto"
+  };
+  const lbl = {
+    display: "block",
+    fontSize: 11,
+    fontWeight: 700,
+    color: "#666",
+    marginBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: "0.06em"
+  };
+  const fC = {
+    TTK: "#f59e0b",
+    OTK: "#3b82f6",
+    VKO: R,
+    OTO: "#555"
+  };
+  const fBg = {
+    TTK: "#fef3c7",
+    OTK: "#dbeafe",
+    VKO: "#fee2e2",
+    OTO: "#f3f4f6"
+  };
+  const fTx = {
+    TTK: "#92400e",
+    OTK: "#1e40af",
+    VKO: "#991b1b",
+    OTO: "#1f2937"
+  };
+  const TBL = ({
+    rows,
+    accent,
+    label
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      fontWeight: 700,
+      color: accent,
+      marginBottom: 4,
+      display: "flex",
+      justifyContent: "space-between"
+    }
+  }, /*#__PURE__*/React.createElement("span", null, label), /*#__PURE__*/React.createElement("span", null, fd(rows[0].date))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: "auto",
+      WebkitOverflowScrolling: "touch"
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: "100%",
+      borderCollapse: "collapse",
+      fontSize: 13,
+      minWidth: 440
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    style: {
+      background: accent,
+      color: W
+    }
+  }, ["Rek.", "Omschrijving", "Debet", "Credit", "Anal."].map(h => /*#__PURE__*/React.createElement("th", {
+    key: h,
+    style: {
+      padding: "6px 8px",
+      textAlign: h === "Debet" || h === "Credit" ? "right" : "left",
+      fontWeight: 600
+    }
+  }, h)))), /*#__PURE__*/React.createElement("tbody", null, rows.map((e, i) => /*#__PURE__*/React.createElement("tr", {
+    key: i,
+    style: {
+      borderBottom: "1px solid #eee",
+      background: i % 2 === 0 ? "#fff" : "#fafafa"
+    }
+  }, /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: "5px 8px",
+      fontFamily: "monospace",
+      fontWeight: 700
+    }
+  }, e.acct), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: "5px 8px"
+    }
+  }, e.desc, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      marginLeft: 6,
+      padding: "1px 6px",
+      borderRadius: 2,
+      background: fBg[e.fase],
+      color: fTx[e.fase],
+      fontWeight: 600
+    }
+  }, e.fase)), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: "5px 8px",
+      textAlign: "right"
+    }
+  }, e.d > 0 ? fa(e.d) : ""), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: "5px 8px",
+      textAlign: "right"
+    }
+  }, e.c > 0 ? fa(e.c) : ""), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: "5px 8px",
+      fontFamily: "monospace"
+    }
+  }, e.anal)))))));
+  if (!authed) return /*#__PURE__*/React.createElement(LoginScreen, {
+    onLogin: () => setAuthed(true)
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 880,
+      margin: "0 auto",
+      color: BK,
+      background: W
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: BK,
+      color: W,
+      padding: "18px 20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 24,
+      fontWeight: 900,
+      letterSpacing: "0.05em"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: R
+    }
+  }, "FORREZ"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 300,
+      fontSize: 13,
+      marginLeft: 12,
+      color: "#777"
+    }
+  }, "Part of the Magna Tyres Group"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      background: "#fafafa",
+      borderBottom: "2px solid " + BK
+    }
+  }, [["setup", "Parameters"], ["timeline", "Boekingsreeks"]].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
+    key: k,
+    onClick: () => setView(k),
+    style: {
+      padding: "12px 24px",
+      fontSize: 13,
+      fontWeight: 700,
+      border: "none",
+      cursor: "pointer",
+      background: view === k ? BK : "transparent",
+      color: view === k ? W : BK
+    }
+  }, l))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "16px 16px 24px"
+    }
+  }, view === "setup" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Vennootschap"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("select", {
+    style: {
+      ...selS,
+      flex: 1
+    },
+    value: f.company,
+    onChange: e => s("company", e.target.value)
+  }, companies.map(c => /*#__PURE__*/React.createElement("option", {
+    key: c
+  }, c))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setAdding(adding === "c" ? null : "c"),
+    style: {
+      padding: "0 14px",
+      fontSize: 18,
+      fontWeight: 900,
+      background: BK,
+      color: W,
+      border: "none",
+      borderRadius: 3,
+      cursor: "pointer"
+    }
+  }, "+")), adding === "c" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 6,
+      display: "flex",
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    placeholder: "Naam",
+    style: {
+      ...inp,
+      flex: 1
+    },
+    value: newComp,
+    onChange: e => setNewComp(e.target.value)
+  }), /*#__PURE__*/React.createElement("button", {
+    style: {
+      padding: "8px 14px",
+      background: R,
+      color: W,
+      border: "none",
+      borderRadius: 3,
+      fontWeight: 700,
+      cursor: "pointer"
+    },
+    onClick: () => {
+      if (!newComp) return;
+      setCompanies(p => [...p, newComp].sort());
+      s("company", newComp);
+      setNewComp("");
+      setAdding(null);
+    }
+  }, "OK"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 150
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Documenttype"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("select", {
+    style: {
+      ...selS,
+      flex: 1
+    },
+    value: f.docType,
+    onChange: e => s("docType", e.target.value)
+  }, docTypes.map(d => /*#__PURE__*/React.createElement("option", {
+    key: d.id,
+    value: d.id
+  }, d.name))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setAdding(adding === "d" ? null : "d"),
+    style: {
+      padding: "0 14px",
+      fontSize: 18,
+      fontWeight: 900,
+      background: BK,
+      color: W,
+      border: "none",
+      borderRadius: 3,
+      cursor: "pointer"
+    }
+  }, "+")), adding === "d" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 6,
+      display: "flex",
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    placeholder: "Naam",
+    style: {
+      ...inp,
+      flex: 2
+    },
+    value: newDoc.name,
+    onChange: e => setNewDoc(p => ({
+      ...p,
+      name: e.target.value
+    }))
+  }), /*#__PURE__*/React.createElement("input", {
+    placeholder: "Rek.",
+    style: {
+      ...inp,
+      width: 70
+    },
+    value: newDoc.exp,
+    onChange: e => setNewDoc(p => ({
+      ...p,
+      exp: e.target.value
+    }))
+  }), /*#__PURE__*/React.createElement("button", {
+    style: {
+      padding: "8px 12px",
+      background: R,
+      color: W,
+      border: "none",
+      borderRadius: 3,
+      fontWeight: 700,
+      cursor: "pointer"
+    },
+    onClick: () => {
+      if (!newDoc.name || !newDoc.exp) return;
+      const id = newDoc.name.toLowerCase().replace(/\s+/g, "_").slice(0, 20);
+      setDocTypes(p => [...p, {
+        id,
+        name: newDoc.name,
+        exp: newDoc.exp
+      }]);
+      s("docType", id);
+      setNewDoc({
+        name: "",
+        exp: ""
+      });
+      setAdding(null);
+    }
+  }, "OK"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 150
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Analytische code"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("select", {
+    style: {
+      ...selS,
+      flex: 1
+    },
+    value: f.anal,
+    onChange: e => s("anal", e.target.value)
+  }, anals.map(a => /*#__PURE__*/React.createElement("option", {
+    key: a.code,
+    value: a.code
+  }, a.code, " – ", a.name))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setAdding(adding === "a" ? null : "a"),
+    style: {
+      padding: "0 14px",
+      fontSize: 18,
+      fontWeight: 900,
+      background: BK,
+      color: W,
+      border: "none",
+      borderRadius: 3,
+      cursor: "pointer"
+    }
+  }, "+")), adding === "a" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 6,
+      display: "flex",
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    placeholder: "Code",
+    style: {
+      ...inp,
+      width: 50
+    },
+    value: newAnal.code,
+    onChange: e => setNewAnal(p => ({
+      ...p,
+      code: e.target.value
+    }))
+  }), /*#__PURE__*/React.createElement("input", {
+    placeholder: "Naam",
+    style: {
+      ...inp,
+      flex: 1
+    },
+    value: newAnal.name,
+    onChange: e => setNewAnal(p => ({
+      ...p,
+      name: e.target.value
+    }))
+  }), /*#__PURE__*/React.createElement("button", {
+    style: {
+      padding: "8px 12px",
+      background: R,
+      color: W,
+      border: "none",
+      borderRadius: 3,
+      fontWeight: 700,
+      cursor: "pointer"
+    },
+    onClick: () => {
+      if (!newAnal.code || !newAnal.name) return;
+      setAnals(p => [...p, newAnal].sort((a, b) => a.code.localeCompare(b.code, undefined, {
+        numeric: true
+      })));
+      s("anal", newAnal.code);
+      setNewAnal({
+        code: "",
+        name: ""
+      });
+      setAdding(null);
+    }
+  }, "OK")))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 130
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Periode van"), /*#__PURE__*/React.createElement("input", {
+    type: "month",
+    style: inp,
+    value: f.from,
+    onChange: e => s("from", e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 130
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Periode tot"), /*#__PURE__*/React.createElement("input", {
+    type: "month",
+    style: inp,
+    value: f.to,
+    onChange: e => s("to", e.target.value)
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      border: "2px solid " + BK,
+      borderRadius: 4,
+      padding: 16,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      marginBottom: 14,
+      color: R
+    }
+  }, "ONROERENDE VOORHEFFING"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "10px 12px",
+      background: "#f9fafb",
+      borderLeft: "4px solid " + BK,
+      borderRadius: "0 4px 4px 0",
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 100%",
+      minWidth: 140
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Geschat bedrag (vorig jaar)"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    step: "0.01",
+    style: {
+      ...inp,
+      maxWidth: 300
+    },
+    value: f.geschat,
+    onChange: e => s("geschat", e.target.value),
+    placeholder: "8500.00"
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 12,
+      alignItems: "flex-end"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 140
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Werkelijk bedrag"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    step: "0.01",
+    style: {
+      ...inp,
+      borderColor: f.werkelijk ? "#22c55e" : "#ccc"
+    },
+    value: f.werkelijk,
+    onChange: e => s("werkelijk", e.target.value),
+    placeholder: "bij ontvangst invullen"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 140
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Ontvangst aanslagbiljet"), /*#__PURE__*/React.createElement("input", {
+    type: "month",
+    style: inp,
+    value: f.maandOntvangst,
+    onChange: e => s("maandOntvangst", e.target.value)
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 150
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Eigenaar"), /*#__PURE__*/React.createElement("select", {
+    style: selS,
+    value: f.isOwner,
+    onChange: e => {
+      s("isOwner", e.target.value);
+      if (e.target.value === "nee") s("doorgefactureerd", "nee");
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "ja"
+  }, "Ja"), /*#__PURE__*/React.createElement("option", {
+    value: "nee"
+  }, "Nee"))))), isOwner && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "10px 12px",
+      background: "#fff5f5",
+      borderLeft: "4px solid " + R,
+      borderRadius: "0 4px 4px 0"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 140
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Betaling onroerende voorheffing ontvangen huurder"), /*#__PURE__*/React.createElement("select", {
+    style: selS,
+    value: f.doorgefactureerd,
+    onChange: e => s("doorgefactureerd", e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "nee"
+  }, "Nee"), /*#__PURE__*/React.createElement("option", {
+    value: "ja"
+  }, "Ja"))), isDoor && /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 48%",
+      minWidth: 140
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "Maand doorfacturatie"), /*#__PURE__*/React.createElement("input", {
+    type: "month",
+    style: inp,
+    value: f.maandDoorfacturatie,
+    onChange: e => s("maandDoorfacturatie", e.target.value)
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#999",
+      marginTop: 2
+    }
+  }, "Vanaf deze maand → 744002 @ 493000 (OTO)"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#999",
+      marginTop: 8
+    }
+  }, "Bedrag = werkelijk bedrag aanslagbiljet"))), totM > 0 && baseAmt > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "10px 14px",
+      background: "#f5f5f5",
+      borderLeft: "4px solid " + R,
+      marginBottom: 16,
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement("strong", null, totM, " maanden"), " → EUR ", /*#__PURE__*/React.createElement("strong", null, fa(perM)), "/maand (geschat)", Number(f.werkelijk) > 0 && /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: 12,
+      color: "#22c55e"
+    }
+  }, "Werkelijk: EUR ", /*#__PURE__*/React.createElement("strong", null, fa(Number(f.werkelijk) / totM)), "/maand")), /*#__PURE__*/React.createElement("button", {
+    onClick: doGen,
+    style: {
+      padding: "14px 36px",
+      fontSize: 15,
+      fontWeight: 800,
+      background: R,
+      color: W,
+      border: "none",
+      borderRadius: 4,
+      cursor: "pointer",
+      width: "100%"
+    }
+  }, "Boekingsreeks genereren & plannen")), view === "timeline" && /*#__PURE__*/React.createElement("div", null, months.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: 40,
+      color: "#999"
+    }
+  }, "Geen data.") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      flexWrap: "wrap",
+      marginBottom: 10,
+      fontSize: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: BK,
+      color: W,
+      padding: "5px 12px",
+      borderRadius: 3,
+      fontWeight: 700
+    }
+  }, f.company), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: "#f0f0f0",
+      padding: "5px 12px",
+      borderRadius: 3
+    }
+  }, "Anal. ", f.anal), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: "#f0f0f0",
+      padding: "5px 12px",
+      borderRadius: 3
+    }
+  }, f.from, " → ", f.to), Number(f.geschat) > 0 && /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: fBg.TTK,
+      color: fTx.TTK,
+      padding: "5px 12px",
+      borderRadius: 3
+    }
+  }, "Geschat: EUR ", fa(Number(f.geschat))), Number(f.werkelijk) > 0 && /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: "#dcfce7",
+      color: "#166534",
+      padding: "5px 12px",
+      borderRadius: 3,
+      fontWeight: 700
+    }
+  }, "Werkelijk: EUR ", fa(Number(f.werkelijk))), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: "#f0f0f0",
+      padding: "5px 12px",
+      borderRadius: 3
+    }
+  }, "Eigenaar: ", f.isOwner), isDoor && /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: fBg.VKO,
+      color: fTx.VKO,
+      padding: "5px 12px",
+      borderRadius: 3
+    }
+  }, "Doorgefactureerd")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      marginBottom: 12,
+      fontSize: 11,
+      flexWrap: "wrap"
+    }
+  }, Object.entries({
+    TTK: "Provisie (kost)",
+    OTK: "Werkelijk (kost)",
+    VKO: "Verkregen opbrengst",
+    OTO: "Over te dragen opbrengst"
+  }).filter(([k]) => entries.some(e => e.fase === k)).map(([k, v]) => /*#__PURE__*/React.createElement("span", {
+    key: k,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "inline-block",
+      width: 12,
+      height: 12,
+      background: fC[k],
+      borderRadius: 2
+    }
+  }), v))), months.map(m => {
+    const open = expanded === m.key;
+    const mainColor = fC[m.kostFase] || BK;
+    return /*#__PURE__*/React.createElement("div", {
+      key: m.key,
+      style: {
+        marginBottom: 6,
+        border: "1px solid #ddd",
+        borderRadius: 4,
+        overflow: "hidden",
+        borderLeft: "4px solid " + mainColor
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => setExpanded(open ? null : m.key),
+      style: {
+        width: "100%",
+        padding: "11px 16px",
+        background: open ? BK : "#fafafa",
+        color: open ? W : BK,
+        border: "none",
+        cursor: "pointer",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        fontSize: 14,
+        fontWeight: 700,
+        textAlign: "left"
+      }
+    }, /*#__PURE__*/React.createElement("span", null, m.label, m.kostFase && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 10,
+        fontWeight: 600,
+        padding: "2px 8px",
+        borderRadius: 2,
+        marginLeft: 8,
+        background: open ? "rgba(255,255,255,0.15)" : fBg[m.kostFase],
+        color: open ? W : fTx[m.kostFase]
+      }
+    }, m.kostFase), m.opbrFase && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 10,
+        fontWeight: 600,
+        padding: "2px 8px",
+        borderRadius: 2,
+        marginLeft: 4,
+        background: open ? "rgba(255,255,255,0.15)" : fBg[m.opbrFase],
+        color: open ? W : fTx[m.opbrFase]
+      }
+    }, m.opbrFase)), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12,
+        color: open ? "#888" : "#999"
+      }
+    }, open ? "\u25B2" : "\u25BC")), open && /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "12px 16px"
+      }
+    }, m.boeking.length > 0 && /*#__PURE__*/React.createElement(TBL, {
+      rows: m.boeking,
+      accent: BK,
+      label: "Boeking"
+    }), m.tegen.length > 0 && /*#__PURE__*/React.createElement(TBL, {
+      rows: m.tegen,
+      accent: "#92400e",
+      label: "Tegenboeking"
+    })));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      flexWrap: "wrap",
+      marginTop: 16
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: exportAPI,
+    style: {
+      padding: "12px 24px",
+      fontSize: 14,
+      fontWeight: 800,
+      background: R,
+      color: W,
+      border: "none",
+      borderRadius: 4,
+      cursor: "pointer",
+      flex: "1 1 auto"
+    }
+  }, "Volledige reeks naar Data-M (API)"), /*#__PURE__*/React.createElement("button", {
+    onClick: exportCSV,
+    style: {
+      padding: "12px 24px",
+      fontSize: 14,
+      fontWeight: 700,
+      background: BK,
+      color: W,
+      border: "none",
+      borderRadius: 4,
+      cursor: "pointer"
+    }
+  }, "CSV"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setView("setup"),
+    style: {
+      padding: "12px 20px",
+      fontSize: 14,
+      fontWeight: 600,
+      background: "#f0f0f0",
+      color: BK,
+      border: "1px solid #ccc",
+      borderRadius: 4,
+      cursor: "pointer"
+    }
+  }, "← Parameters"))))));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
+</script>
+</body>
+</html>
